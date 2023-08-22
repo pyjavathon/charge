@@ -1,0 +1,13 @@
+spring:
+    datasource:
+        driver-class-name: org.mariadb.jdbc.Driver
+        url: jdbc:mariadb://localhost:3306/evstation
+        username: root
+        password: evstation
+       
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MariaDBDialect

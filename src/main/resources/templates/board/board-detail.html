@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<h2>게시글 상세</h2>
+
+<div>
+	<label for="boardNm">제목</label>
+	<input type="text" id="boardNm" name="boardNm" value="제목" th:value="${board.boardNm}" >
+</div>
+
+<div>
+	<label for="boardWriter">작성자</label>
+	<input type="text" id="boardWriter" name="boardWriter" value="작성자" th:value="${board.boardWriter}" readonly>
+</div>
+
+<div>
+	<label for="boardContent">내용</label>
+	<input type="text" id="boardContent" name="boardContent" value="내용" th:value="${board.boardContent}">
+</div>
+
+<div>
+	<button onclick="location.href='board-edit.html'" th:onclick="|location.href='@{/board/{boardId}/edit(boardId=${board.boardId})}'|" type="button">게시글 수정</button>
+</div>
+
+<div>
+	<button onclick="location.href='board-list.html'" th:onclick="|location.href='@{/board/list}'|" type="button">목록으로</button>
+</div>
+
+</body>
+</html>
