@@ -20,7 +20,7 @@
   </tr>
   <tr th:each="board : ${boards}">
     <td th:text="${board.boardId}">boardId</td>
-    <td th:text="${board.boardNm}">boardNm</td>
+    <td><a href="board-detail.html" th:href="@{|/board/${board.boardId}|}" th:text="${board.boardNm}">boardNm</a></td>
     <td th:text="${board.boardWriter}">boardWriter</td>
     <td th:text="${board.boardContent}">boardContent</td>
   </tr>

@@ -8,5 +8,5 @@ import com.evstation.charge.board.entity.Board;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long>{
 
-	Board findById(long boardId);
+	Board findByBoardId(Long boardId);
 }
