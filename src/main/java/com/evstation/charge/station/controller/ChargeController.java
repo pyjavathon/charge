@@ -8,9 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.evstation.charge.station.entity.Charge;
-import com.evstation.charge.station.entity.ChargerMapping;
-import com.evstation.charge.station.service.ChargeService;
+import com.evstation.charge.station.entity.StationInfo;
+import com.evstation.charge.station.service.StationInfoService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class ChargeController {
 	
-	private final ChargeService chargeSer;
+	private final StationInfoService stationInfoSer;
 	
 	@GetMapping("/dots")
 	public String dots(Model m) {
-		List<ChargerMapping> dots = chargeSer.findTest();
-		log.info("데이터 갯수: {}", dots.size());
-		m.addAttribute("dots", dots);
-		return "ev-station/test";
+		List<StationInfo> list = stationInfoSer.findAll();
+		m.addAttribute("list", list);
+		return "ev-station/station-info";
 	}
 	
 
