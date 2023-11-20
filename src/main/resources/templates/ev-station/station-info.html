@@ -11,8 +11,8 @@
 <script th:inline="javascript">
 
 		var map = new kakao.maps.Map(document.getElementById('map'), { // 지도를 표시할 div
-    	center : new kakao.maps.LatLng(36.2683, 127.6358), // 지도의 중심좌표 
-    	level : 14 // 지도의 확대 레벨 
+    	center : new kakao.maps.LatLng(37.566887, 126.978063), // 지도의 중심좌표 
+    	level : 8 // 지도의 확대 레벨 
 		});
 		
 		// 마커 클러스터러를 생성합니다 
@@ -48,7 +48,7 @@
 		    
 		    markers.push(marker);
 		} 
-		///////////////////
+		
 		
 		        // 클러스터러에 마커들을 추가합니다
 		        clusterer.addMarkers(markers);
