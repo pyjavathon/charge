@@ -32,18 +32,9 @@
 </div>
 
 
-<!-- <form >
-	<input type="hidden" id="boardId" th:value="${board.boardId}">
-	<div>
-		<textarea id="comment-content" rows="4" placeholder="댓글을 입력하세요."></textarea>
-	</div>
-	<div>
-		<button id="comment-btn-save" type="submit">등록</button>
-	</div>
-</form> -->
 
-<div class="card">
-	<div class="card-header">댓글</div>
+
+
 	<form>
             <div class="card-body">
                 <input type="hidden" id="boardId" th:value="${board.boardId}">
@@ -54,8 +45,21 @@
                     </li>
                 </ul>
             </div>
-        </form>
-</div>
+   </form>
+
+<div class="card">
+        <div class="card-header">댓글</div>
+        <ul id="reply--box" class="list-group" th:each="comment : ${board.comments}">
+            <li th:id="'reply--' + ${comment.commentId}" class="list-group-item d-flex justify-content-between">
+                <div th:text="${comment.comment}"></div>
+                <div class="d-flex">
+                    <span class="text-monospace mr-1">작성자: &nbsp;</span><div class="text-monospace mr-1" th:text="${comment.commentWriter}"></div>
+                    <button class="badge btn-warning">수정</button><span> | </span>
+                    <button class="badge btn-danger">삭제</button>
+                </div>
+            </li>
+        </ul>
+    </div>
 
 
 
@@ -72,7 +76,7 @@ let comIndex = {
 		
 		comSave: function(){
 			let data = {
-					content: $("#comment-content").val(),
+					comment: $("#comment-content").val(),
 			}
 			let boardId = $("#boardId").val();	
 			console.log(data);
