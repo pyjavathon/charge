@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.evstation.charge.login.entity.UserEntity;
+import com.evstation.charge.login.entity.LoginEntity;
 import com.evstation.charge.login.service.LoginService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ public class LoginController {
 	
 	@GetMapping
 	public String joinForm(Model m) {
-		m.addAttribute("user", new UserEntity());
+		m.addAttribute("user", new LoginEntity());
 		return "login/join";
 	}
 	
 	@PostMapping
-	public String joinUser(@ModelAttribute UserEntity joinUser) {
-		UserEntity saveUser = loginSer.save(joinUser);
+	public String joinUser(@ModelAttribute LoginEntity joinUser) {
+		LoginEntity saveUser = loginSer.save(joinUser);
 		return "login/login";
 	}
 

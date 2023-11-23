@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class UserEntity {
+public class LoginEntity {
 
 	
 	@Id
@@ -12,7 +12,7 @@ public class UserEntity {
 	
 	String pw;
 	
-	String name;
+	
 	
  
 	

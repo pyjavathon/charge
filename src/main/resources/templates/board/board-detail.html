@@ -31,5 +31,70 @@
 	<button onclick="location.href='board-list.html'" th:onclick="|location.href='@{/board/list}'|" type="button">목록으로</button>
 </div>
 
+
+<!-- <form >
+	<input type="hidden" id="boardId" th:value="${board.boardId}">
+	<div>
+		<textarea id="comment-content" rows="4" placeholder="댓글을 입력하세요."></textarea>
+	</div>
+	<div>
+		<button id="comment-btn-save" type="submit">등록</button>
+	</div>
+</form> -->
+
+<div class="card">
+	<div class="card-header">댓글</div>
+	<form>
+            <div class="card-body">
+                <input type="hidden" id="boardId" th:value="${board.boardId}">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <textarea class="form-control" id="comment-content" rows="1"></textarea>
+                        <button id="comment-btn-save" type="button" class="btn btn-dark mt-3">등록</button>
+                    </li>
+                </ul>
+            </div>
+        </form>
+</div>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script th:inline="javascript">
+
+let comIndex = {
+		init: function(){
+			$("#comment-btn-save").on("click",() => {
+				this.comSave();
+			});
+		},
+		
+		comSave: function(){
+			let data = {
+					content: $("#comment-content").val(),
+			}
+			let boardId = $("#boardId").val();	
+			console.log(data);
+			console.log(boardId);
+			$.ajax({
+				type: "POST",
+				url: `/comment/${boardId}`,
+				data: JSON.stringify(data),
+				contentType: "application/json; charset=utf-8",
+				dataType: "text"
+			}).done(function (res){
+				alert("댓글 작성이 완료되었습니다.");
+				location.href = `/board/${boardId}`;
+			}).fail(function (err){
+				alert(JSON.stringify(err));
+			});
+		},
+		
+	}
+comIndex.init();
+
+</script>
+
 </body>
 </html>

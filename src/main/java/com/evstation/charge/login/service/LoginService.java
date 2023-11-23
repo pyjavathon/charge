@@ -1,9 +1,9 @@
 package com.evstation.charge.login.service;
 
-import com.evstation.charge.login.entity.UserEntity;
+import com.evstation.charge.login.entity.LoginEntity;
 
 public interface LoginService {
 
-	UserEntity save(UserEntity joinUser);
+	LoginEntity save(LoginEntity joinUser);
 
 }

@@ -1,6 +1,7 @@
 package com.evstation.charge.board.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.evstation.charge.board.dto.BoardResponseDto;
+import com.evstation.charge.board.dto.CommentResponseDto;
 import com.evstation.charge.board.entity.Board;
 import com.evstation.charge.board.repository.BoardRepository;
+import com.evstation.charge.board.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardController {
 	
 	private final BoardRepository boardRepo;
+	private final BoardService boardSer;
 
 	
 	@GetMapping("/add")
@@ -41,8 +46,10 @@ public class BoardController {
 	
 	@GetMapping("/{boardId}")
 	public String detail(@PathVariable Long boardId,Model m) {
-		Board board = boardRepo.findByBoardId(boardId);
-		m.addAttribute("board", board);
+		BoardResponseDto dto = boardSer.findById(boardId);
+		List<CommentResponseDto> comments = dto.getComments();
+		if(comments != null && !comments.isEmpty()) m.addAttribute("comments", comments);
+		m.addAttribute("board", dto);
 		return "board/board-detail";
 	}
 	
@@ -55,7 +62,7 @@ public class BoardController {
 	
 	@GetMapping("/{boardId}/edit")
 	public String editForm(@PathVariable Long boardId, Model m) {
-		Board board = boardRepo.findByBoardId(boardId);
+		Optional<Board> board = boardRepo.findById(boardId);
 		m.addAttribute("board", board);
 		return "board/board-edit";
 	}
@@ -65,6 +72,7 @@ public class BoardController {
 		boardRepo.save(reqBoard);
 		return "redirect:/board/{boardId}";
 	}
+	
 	
 	
 }
