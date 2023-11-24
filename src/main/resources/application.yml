@@ -12,4 +12,19 @@ spring:
             hibernate:
                 format_sql: true
                 use_sql_comments: true
-
+    redis:
+      port: 6379
+      timeout: 3000
+server:
+  port: 8080
+  servlet:
+    context-path: /charge-project
+  error:
+    include-exception: true #응답에 exception의 내용을 포함할지 여부
+    
+    
+    
+jwt:
+ secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+ refresh-token-validity-in-seconds: 1209600 # 14일
+ access-token-validity-in-seconds: 43200 # 12시간    
