@@ -1,5 +1,6 @@
 package com.evstation.charge.login.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,6 +19,7 @@ import lombok.Setter;
 public class Authority {
 	
 	@Id
+	@Column(name = "authority_name")
 	private String authorityName;
 
 }

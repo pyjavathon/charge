@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("login-test")
+@RequestMapping("/login-test")
 public class LoginController {
 	
 	private final LoginService loginSer;
@@ -65,7 +64,7 @@ public class LoginController {
 		return ResponseEntity.ok(loginSer.logout(userRequestVo));
 	}
 	
-	@PostMapping("/signup")
+	@PostMapping(value="/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody LoginRequestDto.SignUp userVo){
 		return ResponseEntity.ok(loginSer.signup(userVo));
 	}
