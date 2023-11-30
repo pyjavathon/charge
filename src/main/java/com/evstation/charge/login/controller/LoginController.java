@@ -6,7 +6,10 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,12 +24,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.evstation.charge.login.dto.LoginRequestDto;
 import com.evstation.charge.login.entity.User;
 import com.evstation.charge.login.service.LoginService;
+import com.evstation.charge.validation.ValidationGroups;
+import com.evstation.charge.validation.ValidationSequence;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/login-test")
+//@RestController
+@Controller
+@RequestMapping("/login")
 public class LoginController {
 	
 	private final LoginService loginSer;
@@ -51,6 +57,12 @@ public class LoginController {
 		loginSer.userDel(id);
 	}
 	
+	@GetMapping("/login")
+	public String loginForm(Model m) {
+		m.addAttribute("user", new LoginRequestDto.Login());
+		return "login/login";
+	}
+	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto.Login userRequestVo){
 		
@@ -64,9 +76,17 @@ public class LoginController {
 		return ResponseEntity.ok(loginSer.logout(userRequestVo));
 	}
 	
+	@GetMapping("signup")
+	public String signupForm(Model m) {
+		m.addAttribute("user", new LoginRequestDto.SignUp());
+		return "login/signup";
+	}
+	
 	@PostMapping(value="/signup")
-	public ResponseEntity<?> signup(@Valid @RequestBody LoginRequestDto.SignUp userVo){
-		return ResponseEntity.ok(loginSer.signup(userVo));
+	public String signup(@Validated(ValidationSequence.class) @ModelAttribute("user") LoginRequestDto.SignUp reqsignup, BindingResult bindRe){
+		if(bindRe.hasErrors()) return "login/signup";
+		loginSer.signup(reqsignup);
+		return "redirect:/login/login";
 	}
 	
 	@GetMapping("/user")

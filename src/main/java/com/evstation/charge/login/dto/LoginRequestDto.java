@@ -1,8 +1,14 @@
 package com.evstation.charge.login.dto;
 
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import com.evstation.charge.validation.ValidationGroups;
+import com.evstation.charge.validation.ValidationGroups.SizeCheckGroup;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,11 +22,12 @@ public class LoginRequestDto {
 	@Getter
 	@Setter
 	public static class Login{
-	@NotNull
+	@NotEmpty
+	@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
 	@Size(min = 15, max = 50)
 	private String email;
 	
-	@NotNull
+	@NotEmpty
 	@Size(min = 3, max = 16)
 	private String pw;
 	
@@ -33,10 +40,10 @@ public class LoginRequestDto {
 	@NoArgsConstructor
 	public static class Logout{
 	
-		@NotNull
+		@NotEmpty
 		private String accesstoken;
 
-		@NotNull
+		@NotEmpty
 		private String refreshtoken;
 		
 		private Long accessTokenExpirationTime;
@@ -47,16 +54,16 @@ public class LoginRequestDto {
 	@Getter
 	@Setter
 	public static class SignUp {
-		@NotNull
-		@Size(min = 2, max = 10)
+		
+		@NotEmpty(groups = ValidationGroups.NotEmptyCheckGroup.class)
 		private String username;
 
-		@NotNull
-		@Size(min = 3, max = 16)
+		@NotEmpty(groups = ValidationGroups.NotEmptyCheckGroup.class)
+		@Size(min = 3, max = 16, groups = ValidationGroups.SizeCheckGroup.class)
 		private String pw;
 
-		@NotNull
-		@Size(min = 15, max = 50)
+		@NotEmpty(groups = ValidationGroups.NotEmptyCheckGroup.class)
+		@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.", groups = ValidationGroups.PatternCheckGroup.class)
 		private String email;
 
 	

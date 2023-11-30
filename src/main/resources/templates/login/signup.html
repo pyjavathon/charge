@@ -3,11 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+
+	.field-error{
+		border-color:#dc3545;
+		color:#dc3545;
+	}
+
+</style>
 </head>
 <body>
+<h2>회원가입</h2>
+
+<form action="login.html" th:action th:object="${user}" method="post" onsubmit="signup()">
+
+<!-- <div th:if="${#fields.hasGlobalErrors()}">
+	<p class="field-error" th:each="err:${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+</div> -->
+
 
 <div>
-	<input type="text" id="boardNm" name="boardNm" value="제목" th:value="${test.username}" readonly>
+	<label for=username>이름</label>
+	<input type="text" id="username" th:field="*{username}" placeholder="이름을 입력하세요" th:errorclass="field-error">
+	<div class="field-error" th:errors="*{username}"/>
 </div>
+
+<div>
+	<label for=email>아이디</label>
+	<input type="text" id="email" th:field="*{email}" placeholder="ex)이메일 형식으로 입력하세요">
+	<div class="field-error" th:errors="*{email}" />
+</div>
+
+<div>
+	<lable for=pw>비밀번호</lable>
+	<input type="text" id="pw" th:field="*{pw}" placeholder="비밀번호를 입력하세요">
+	<div class="field-error" th:errors="*{pw}" ></div>
+</div>
+
+<div>
+	<button type="submit" >회원가입</button>
+</div>
+
+<div>
+	<button onclick="location.href='index.html'" th:onclick="|location.href='@{/}'|" type="button">취소</button>
+</div>
+
+</form>
+
+<script th:inline="javascript">
+function signup(){
+
+var errors = document.getElementByClassName('field-error');
+if(errors.size()==0) alert("회원가입을 축하합니다.")
+
+}
+
+</script>
+
+
+
+
 </body>
 </html>

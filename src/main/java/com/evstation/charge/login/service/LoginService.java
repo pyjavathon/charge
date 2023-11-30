@@ -18,7 +18,7 @@ public interface LoginService {
 
 	public void userDel(Long id);
 
-	User signup(LoginRequestDto.SignUp userVo);
+	ResponseEntity<?> signup(LoginRequestDto.SignUp userVo);
 
 	Optional<User> getUserWithAuthorities(String userEmail);
 

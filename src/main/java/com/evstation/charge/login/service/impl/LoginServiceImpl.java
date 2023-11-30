@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -92,9 +93,9 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 	
 
 	@Override
-	public User signup(LoginRequestDto.SignUp userVo) {
+	public ResponseEntity<?> signup(LoginRequestDto.SignUp userVo) {
 		if (userRepo.findOneWithAuthoritiesByEmail(userVo.getEmail()).orElse(null) != null) {
-			throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+			return new ResponseEntity("이미 가입되어 있는 유저입니다.", HttpStatus.BAD_REQUEST);
 		}
 
 		Authority authority = Authority.builder().authorityName("ROLE_USER").build();
@@ -105,8 +106,8 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 									.email(userVo.getEmail())
 									.authorities(Collections.singleton(authority))
 									.build();
-
-		return userRepo.save(user);
+		userRepo.save(user);
+		return new ResponseEntity("이미 가입되어 있는 유저입니다.", HttpStatus.BAD_REQUEST);
 
 	}
 

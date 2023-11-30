@@ -63,7 +63,7 @@ public class SecurityConfig {
 
 			.and().requestMatchers()// httpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다
 			.antMatchers("/charge-project/login-test/signup")// 이 api에 대한 접근은 인증없이 허용함
-			
+			.antMatchers("/charge-project/login-test/login")
 
 			.and()
 			.addFilterBefore(new JwtAuthenticationFilter(tokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
