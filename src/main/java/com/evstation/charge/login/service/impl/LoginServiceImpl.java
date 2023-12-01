@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.evstation.charge.jwt.JwtAuthenticationFilter;
 import com.evstation.charge.jwt.TokenProvider;
 import com.evstation.charge.login.dto.LoginRequestDto;
+import com.evstation.charge.login.dto.UserDto;
 import com.evstation.charge.login.dto.LoginRequestDto.Login;
 import com.evstation.charge.login.entity.Authority;
 import com.evstation.charge.login.entity.User;
@@ -37,9 +38,11 @@ import com.evstation.charge.util.SecurityUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class LoginServiceImpl implements LoginService, UserDetailsService {
 
 	private final PasswordEncoder passwordEncoder;
@@ -90,13 +93,15 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 
 	}
 
-	
+	@Override
+	public int signupCheck(LoginRequestDto.SignUp userVo) {
+		if(userRepo.findOneWithAuthoritiesByEmail(userVo.getEmail()).orElse(null) != null) return 1;
+		return 0;
+	}
 
 	@Override
-	public ResponseEntity<?> signup(LoginRequestDto.SignUp userVo) {
-		if (userRepo.findOneWithAuthoritiesByEmail(userVo.getEmail()).orElse(null) != null) {
-			return new ResponseEntity("이미 가입되어 있는 유저입니다.", HttpStatus.BAD_REQUEST);
-		}
+	public void signup(LoginRequestDto.SignUp userVo) {
+		
 
 		Authority authority = Authority.builder().authorityName("ROLE_USER").build();
 
@@ -107,7 +112,7 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 									.authorities(Collections.singleton(authority))
 									.build();
 		userRepo.save(user);
-		return new ResponseEntity("이미 가입되어 있는 유저입니다.", HttpStatus.BAD_REQUEST);
+		
 
 	}
 
@@ -147,8 +152,13 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 	}
 
 	@Override
-	public ResponseEntity<?> login(Login userRequestVo) {
-		if(userRepo.findByEmail(userRequestVo.getEmail()).orElse(null)==null) return ResponseEntity.badRequest().body("해당하는 회원이 없습니다.");
+	public int loginIDCheck(LoginRequestDto.Login reqLogin) {
+		if(userRepo.findByEmail(reqLogin.getEmail()).orElse(null)==null) return 0;
+		return 1;
+	}
+	
+	@Override
+	public int loginPwCheck(Login userRequestVo) {
 			
 	    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userRequestVo.getEmail(), userRequestVo.getPw());
 	    Authentication authentication = null;
@@ -157,31 +167,39 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 		 authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		
 	    }catch(Exception e) {
-	    	return ResponseEntity.badRequest().body("로그인 실패 (비밀번호가 일치하지 않습니다.)");
+	    	return 0;
 	    }
 	    
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
-		try {
-		jwt = tokenProvider.createToken(authentication);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-        String tokenString = mapper.writeValueAsString(jwt);
-        
-        redisTemplate.opsForValue().set("RT: " + authentication.getName(), tokenString, jwt.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-		
-		}catch(Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.badRequest().body(e+"로그인 실패(관리자에게 문의)");
-		}
-		
-		
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-		return ResponseEntity.ok(jwt);
+		return 1;
 	}
 
+	@Override
+	public LoginRequestDto.Logout loginTokenCheck(Login userRequestVo) {
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userRequestVo.getEmail(), userRequestVo.getPw());
+	  
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+	    
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+	   
+		LoginRequestDto.Logout jwt = null;
+	    
+	    try {
+			jwt = tokenProvider.createToken(authentication);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+	        String tokenString = mapper.writeValueAsString(jwt);
+	        
+	        redisTemplate.opsForValue().set("RT: " + authentication.getName(), tokenString, jwt.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+			
+			}catch(Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+	    return jwt;
+	}
+	
+	
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(final String userEmail) {
@@ -197,6 +215,12 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 
 		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPw(),
 				grantedAuthorities);
+	}
+
+	@Override
+	public ResponseEntity<?> login(Login userRequestVo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

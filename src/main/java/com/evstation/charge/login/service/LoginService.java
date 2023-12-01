@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 
 import com.evstation.charge.login.dto.LoginRequestDto;
+import com.evstation.charge.login.dto.UserDto;
+import com.evstation.charge.login.dto.LoginRequestDto.Login;
 import com.evstation.charge.login.entity.User;
 
 public interface LoginService {
@@ -18,7 +20,7 @@ public interface LoginService {
 
 	public void userDel(Long id);
 
-	ResponseEntity<?> signup(LoginRequestDto.SignUp userVo);
+	void signup(LoginRequestDto.SignUp userVo);
 
 	Optional<User> getUserWithAuthorities(String userEmail);
 
@@ -27,5 +29,13 @@ public interface LoginService {
 	public Object logout(LoginRequestDto.Logout userRequestVo);
 
 	public ResponseEntity<?> login(LoginRequestDto.Login userRequestVo);
+	
+	int loginIDCheck(LoginRequestDto.Login reqLogin);
+	
+	int loginPwCheck(Login userRequestVo);
+	
+	LoginRequestDto.Logout loginTokenCheck(Login userRequestVo);
+	
+	int signupCheck(LoginRequestDto.SignUp userVo);
 
 }

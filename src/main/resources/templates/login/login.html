@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<h2>로그인창</h2>
+<form class="form-inline my-2 my-lg-0" form-method="post" th:action="@{/logout}">
+    <button sec:authorize="isAuthenticated()" class="btn btn-outline-danger my-2 my-sm-0 btn-sm" type="submit" value="Logout">Logout</button>
+    <button sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn btn-outline-info my-2 my-sm-0 btn-sm" type="submit">Login</button>
+</form>
+<p>
+<form action="index.html" th:action th:object="${user}" method="post">
+<div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+        </div>
+<div>
+	<label for="email">아이디</label>
+	<input type="email" id="email" th:field="*{email}" placeholder="아이디를 입력하세요">
+	<div class="field-error" th:errors="*{email}"/>
+</div>
+
+<div>
+	<label for="pw">비밀번호</label>
+	<input type="password" id="pw" th:field="*{pw}" placeholder="비밀번호를 입력하세요">
+	<div class="field-error" th:errors="*{pw}"/>
+</div>
+
+<div>
+	<button type="submit">로그인</button>
+</div>
+
+<div>
+	<button onclick="location.href='index.html'" th:onclick="|location.href='@{/}'|" type="button">메인으로</button>
+</div>
+
+</form>
+</body>
+</html>

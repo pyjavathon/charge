@@ -2,8 +2,11 @@ package com.evstation.charge.login.controller;
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,14 +24,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.evstation.charge.jwt.JwtAuthenticationFilter;
 import com.evstation.charge.login.dto.LoginRequestDto;
+import com.evstation.charge.login.dto.LoginRequestDto.Logout;
 import com.evstation.charge.login.entity.User;
 import com.evstation.charge.login.service.LoginService;
 import com.evstation.charge.validation.ValidationGroups;
 import com.evstation.charge.validation.ValidationSequence;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 //@RestController
 @Controller
@@ -64,10 +71,32 @@ public class LoginController {
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto.Login userRequestVo){
+	public String login(@Validated(ValidationSequence.class) @ModelAttribute("user") LoginRequestDto.Login reqLogin, BindingResult bindRe,HttpServletResponse response){
 		
+		if(bindRe.hasErrors()) return "login/login";
 		
-		return ResponseEntity.ok(loginSer.login(userRequestVo));
+		if(loginSer.loginIDCheck(reqLogin)==0) {
+			bindRe.reject("notFound", "일치하는 회원이 없습니다.");
+			return "login/login";
+		}
+		
+		if(loginSer.loginPwCheck(reqLogin)==0) {
+			bindRe.reject("pwError", "비밀번호가 일치하지 않습니다.");
+			return "login/login";
+		}
+		LoginRequestDto.Logout token = loginSer.loginTokenCheck(reqLogin);
+		if(token==null) {
+			bindRe.reject("tokenError", "로그인실패(관리자에게 문의)");
+		}
+		
+		Cookie cookie = new Cookie("refreshToken",token.getRefreshtoken());
+		cookie.setMaxAge(token.getRefreshTokenExpirationTime().intValue());
+		cookie.setHttpOnly(true);
+		
+		response.setHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER, token.getAccesstoken());
+		response.addCookie(cookie);
+		
+		return "redirect:/";
 	}
 	
 	@PostMapping("/logout")
@@ -85,6 +114,11 @@ public class LoginController {
 	@PostMapping(value="/signup")
 	public String signup(@Validated(ValidationSequence.class) @ModelAttribute("user") LoginRequestDto.SignUp reqsignup, BindingResult bindRe){
 		if(bindRe.hasErrors()) return "login/signup";
+		if(loginSer.signupCheck(reqsignup)==1) {
+			bindRe.reject("existUser","이미 존재하는 회원입니다.");
+			return "login/signup";
+		}
+			
 		loginSer.signup(reqsignup);
 		return "redirect:/login/login";
 	}

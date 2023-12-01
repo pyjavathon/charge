@@ -22,13 +22,11 @@ public class LoginRequestDto {
 	@Getter
 	@Setter
 	public static class Login{
-	@NotEmpty
-	@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
-	@Size(min = 15, max = 50)
+	@NotEmpty(groups = ValidationGroups.NotEmptyCheckGroup.class)
+	@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.", groups = ValidationGroups.PatternCheckGroup.class)
 	private String email;
 	
-	@NotEmpty
-	@Size(min = 3, max = 16)
+	@NotEmpty(groups = ValidationGroups.NotEmptyCheckGroup.class)
 	private String pw;
 	
 	}
