@@ -45,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LoginServiceImpl implements LoginService, UserDetailsService {
 
-	private final PasswordEncoder passwordEncoder;
+	//private final PasswordEncoder passwordEncoder;
 	@Autowired
 	private TokenProvider tokenProvider;
 	@Autowired
@@ -99,22 +99,19 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 		return 0;
 	}
 
-	@Override
-	public void signup(LoginRequestDto.SignUp userVo) {
-		
-
-		Authority authority = Authority.builder().authorityName("ROLE_USER").build();
-
-		User user = User.builder()
-									.username(userVo.getUsername())
-									.pw(passwordEncoder.encode(userVo.getPw()))
-									.email(userVo.getEmail())
-									.authorities(Collections.singleton(authority))
-									.build();
-		userRepo.save(user);
-		
-
-	}
+	/*
+	 * @Override public void signup(LoginRequestDto.SignUp userVo) {
+	 * 
+	 * 
+	 * Authority authority = Authority.builder().authorityName("ROLE_USER").build();
+	 * 
+	 * User user = User.builder() .username(userVo.getUsername())
+	 * .pw(passwordEncoder.encode(userVo.getPw())) .email(userVo.getEmail())
+	 * .authorities(Collections.singleton(authority)) .build(); userRepo.save(user);
+	 * 
+	 * 
+	 * }
+	 */
 
 	@Override
 	@Transactional(readOnly = true)

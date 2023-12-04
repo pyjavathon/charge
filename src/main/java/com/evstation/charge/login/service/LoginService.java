@@ -20,7 +20,7 @@ public interface LoginService {
 
 	public void userDel(Long id);
 
-	void signup(LoginRequestDto.SignUp userVo);
+	//void signup(LoginRequestDto.SignUp userVo);
 
 	Optional<User> getUserWithAuthorities(String userEmail);
 

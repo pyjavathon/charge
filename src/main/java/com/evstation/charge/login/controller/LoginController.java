@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.evstation.charge.board.service.BoardService;
+import com.evstation.charge.config.auth.dto.SessionUser;
 import com.evstation.charge.jwt.JwtAuthenticationFilter;
 import com.evstation.charge.login.dto.LoginRequestDto;
 import com.evstation.charge.login.dto.LoginRequestDto.Logout;
@@ -43,6 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginController {
 	
 	private final LoginService loginSer;
+	private final HttpSession httpSession;
+	private final BoardService boardService;
 	
 	@PostMapping(value = "/userRegister")
 	public void userRegister(@RequestBody User user) {
@@ -111,17 +116,16 @@ public class LoginController {
 		return "login/signup";
 	}
 	
-	@PostMapping(value="/signup")
-	public String signup(@Validated(ValidationSequence.class) @ModelAttribute("user") LoginRequestDto.SignUp reqsignup, BindingResult bindRe){
-		if(bindRe.hasErrors()) return "login/signup";
-		if(loginSer.signupCheck(reqsignup)==1) {
-			bindRe.reject("existUser","이미 존재하는 회원입니다.");
-			return "login/signup";
-		}
-			
-		loginSer.signup(reqsignup);
-		return "redirect:/login/login";
-	}
+	/*
+	 * @PostMapping(value="/signup") public String
+	 * signup(@Validated(ValidationSequence.class) @ModelAttribute("user")
+	 * LoginRequestDto.SignUp reqsignup, BindingResult bindRe){
+	 * if(bindRe.hasErrors()) return "login/signup";
+	 * if(loginSer.signupCheck(reqsignup)==1) {
+	 * bindRe.reject("existUser","이미 존재하는 회원입니다."); return "login/signup"; }
+	 * 
+	 * loginSer.signup(reqsignup); return "redirect:/login/login"; }
+	 */
 	
 	@GetMapping("/user")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
@@ -133,6 +137,17 @@ public class LoginController {
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> getUserInfo(@PathVariable String username){
 		return ResponseEntity.ok(loginSer.getUserWithAuthorities(username).get());
+	}
+	
+	@GetMapping("/test")
+	public String index(Model model) {
+	    
+	    SessionUser user = (SessionUser) httpSession.getAttribute("user");
+	    
+	    if (user != null) {
+	        model.addAttribute("username", user.getUsername());
+	    }
+	    return "index";
 	}
 
 }

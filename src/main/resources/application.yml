@@ -16,11 +16,11 @@ spring:
       port: 6379
       timeout: 3000
     messages:
-      basename: errors   
+      basename: errors 
+    profiles:
+      include: oauth     
 server:
   port: 8080
-  servlet:
-    context-path: /charge-project
   error:
     include-exception: true #응답에 exception의 내용을 포함할지 여부
     
