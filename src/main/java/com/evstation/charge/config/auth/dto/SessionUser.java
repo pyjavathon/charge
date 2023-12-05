@@ -2,7 +2,7 @@ package com.evstation.charge.config.auth.dto;
 
 import java.io.Serializable;
 
-import com.evstation.charge.login.entity.User;
+import com.evstation.charge.config.auth.User;
 
 import lombok.Getter;
 

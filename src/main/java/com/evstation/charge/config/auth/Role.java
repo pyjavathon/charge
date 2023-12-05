@@ -1,4 +1,4 @@
-package com.evstation.charge.login.entity;
+package com.evstation.charge.config.auth;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

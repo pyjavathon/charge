@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.evstation.charge.config.auth.dto.OAuthAttributes;
 import com.evstation.charge.config.auth.dto.SessionUser;
-import com.evstation.charge.login.entity.User;
-import com.evstation.charge.login.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

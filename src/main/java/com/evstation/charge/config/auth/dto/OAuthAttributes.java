@@ -2,13 +2,15 @@ package com.evstation.charge.config.auth.dto;
 
 import java.util.Map;
 
-import com.evstation.charge.login.entity.Role;
-import com.evstation.charge.login.entity.User;
+import com.evstation.charge.config.auth.Role;
+import com.evstation.charge.config.auth.User;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
+@Slf4j
 public class OAuthAttributes {
 	
 	private Map<String,Object> attributes;
@@ -32,8 +34,9 @@ public class OAuthAttributes {
 	}
 
 	private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+		log.info("username:{}",(String)attributes.get("name"));
 		return OAuthAttributes.builder()
-							  .username((String)attributes.get("username"))
+							  .username((String)attributes.get("name"))
 							  .email((String)attributes.get("email"))
 							  .attributes(attributes)
 							  .nameAttributeKey(userNameAttributeName)
