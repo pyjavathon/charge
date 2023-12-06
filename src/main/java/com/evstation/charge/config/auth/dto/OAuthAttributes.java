@@ -34,7 +34,7 @@ public class OAuthAttributes {
 	}
 
 	private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
-		log.info("username:{}",(String)attributes.get("name"));
+		//log.info("username:{}",(String)attributes.get("name"));
 		return OAuthAttributes.builder()
 							  .username((String)attributes.get("name"))
 							  .email((String)attributes.get("email"))
@@ -47,7 +47,7 @@ public class OAuthAttributes {
 		return User.builder()
 				   .username(username)
 				   .email(email)
-				   .role(Role.GUEST)
+				   .role(Role.USER)
 				   .build();
 	}
 
