@@ -41,6 +41,7 @@ public class Comment {
 	private String comment;
 	
 	@CreationTimestamp
+	@Column(name = "comment_create_time",updatable = false)
 	private Timestamp commentCreateTime;
 	
 	@UpdateTimestamp

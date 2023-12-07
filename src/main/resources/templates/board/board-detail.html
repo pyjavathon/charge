@@ -64,6 +64,8 @@
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script th:inline="javascript">
+
+/* 댓글 삭제 영역 */
 function comDel(t){
 	let commentId = $(t).val()
 	console.log(commentId);
@@ -80,7 +82,7 @@ function comDel(t){
 	});
 }
 
-
+/* 댓글 수정 영역 */
 function comModi(m){
 	let comId = $(m).val()
 	var exist = $('#comment-content-exist'+comId).text();
@@ -91,8 +93,9 @@ function comModi(m){
 }
 
 function comModiEnd(e,t){
+	
 	let data = {
-		commentId : $(e),	
+		commentId : $(e)[0],	
 		comment: $("#newCom").val()
 	}
 	
@@ -105,7 +108,7 @@ function comModiEnd(e,t){
 		url:`/comment/${boardId}`,
 		data: JSON.stringify(data),
 		contentType: "application/json; charset=utf-8",
-		dataType: "json"
+		dataType: "text"
 	}).done(function (res){
 		alert("댓글 수정이 완료되었습니다.");
 		location.href = `/board/${boardId}`;
@@ -121,9 +124,6 @@ let comIndex = {
 				this.comSave();
 			});
 		},
-		
-		
-		
 		comSave: function(){
 			let data = {
 					comment: $("#comment-content").val(),

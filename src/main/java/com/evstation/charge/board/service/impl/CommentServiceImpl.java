@@ -1,11 +1,8 @@
 package com.evstation.charge.board.service.impl;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.evstation.charge.board.dto.CommentRequestDto;
-import com.evstation.charge.board.dto.CommentResponseDto;
 import com.evstation.charge.board.entity.Board;
 import com.evstation.charge.board.entity.Comment;
 import com.evstation.charge.board.repository.BoardRepository;

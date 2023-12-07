@@ -21,6 +21,7 @@ public class CommentRequestDto {
 	
 	private Long commentId;
 	private String comment;
+	
 	@CreationTimestamp
 	private Timestamp commentCreateTime;
 	@UpdateTimestamp
