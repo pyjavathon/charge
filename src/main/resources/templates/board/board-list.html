@@ -18,14 +18,40 @@
     <th>작성자</th>
     <th>내용</th>
   </tr>
-  <tr th:each="board : ${boards}">
+  <tr th:each="board : ${boardList}">
     <td th:text="${board.boardId}">boardId</td>
     <td><a href="board-detail.html" th:href="@{|/board/${board.boardId}|}" th:text="${board.boardNm}">boardNm</a></td>
     <td th:text="${board.boardWriter}">boardWriter</td>
     <td th:text="${board.boardContent}">boardContent</td>
   </tr>
 </table>
+<div th:if="${!boardList.isEmpty()}">
+    <ul class="pagination"
+        th:with="
+            pageNumber = ${boardList.pageable.pageNumber},
+            pageSize = ${boardList.pageable.pageSize},
+            totalPages = ${boardList.totalPages},
+            startPage = ${T(java.lang.Math).floor(pageNumber / pageSize) * pageSize + 1},
+            tempEndPage = ${startPage + pageSize - 1},
+            endPage = (${tempEndPage < totalPages ? tempEndPage : totalPages})">
 
+        <li th:classappend="${boardList.first} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="${boardList.first} ? '#' : @{/board/list/(page=${pageNumber - 1})}">
+                <span aria-hidden="true">&lt;</span>
+            </a>
+        </li>
+
+        <li th:each="page: ${#numbers.sequence(startPage, endPage)}" th:classappend="${page == pageNumber + 1} ? 'active'" class="page-item">
+            <a th:text="${page}" class="page-link" th:href="@{/board/list/(page=${page - 1})}"></a>
+        </li>
+
+        <li th:classappend="${boardList.last} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="${boardList.last} ? '#' : @{/board/list/(page=${pageNumber + 1})}" aria-label="Next">
+                <span aria-hidden="true">&gt;</span>
+            </a>
+        </li>
+    </ul>
+</div>
 
 </body>
 </html>

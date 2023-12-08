@@ -3,6 +3,9 @@ package com.evstation.charge.board.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +57,9 @@ public class BoardController {
 	}
 	
 	@GetMapping("/list")
-	public String list(Model m) {
-		List<Board> boards = boardRepo.findAll();
-		m.addAttribute("boards", boards);
+	public String list(Model m,@PageableDefault(page = 0, size = 10, sort = "boardId",direction = Sort.Direction.DESC)Pageable pageable) {
+		
+		m.addAttribute("boardList", boardSer.findList(pageable));
 		return "board/board-list";
 	}
 	

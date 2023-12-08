@@ -14,8 +14,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.evstation.charge.board.entity.Board;
 import com.evstation.charge.board.entity.Comment;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
+@NoArgsConstructor
 @Getter
 public class BoardResponseDto {
 
@@ -34,7 +37,7 @@ public class BoardResponseDto {
 	private Timestamp boardUpdateTime;
 	
 	private List<CommentResponseDto> comments;
-	
+	@Builder
 	public BoardResponseDto(Board board) {
 		this.boardId = board.getBoardId();
 		this.boardType = board.getBoardType();
@@ -45,5 +48,6 @@ public class BoardResponseDto {
 		this.boardUpdateTime = board.getBoardUpdateTime();
 		this.comments = board.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
 	}
+
 
 }
