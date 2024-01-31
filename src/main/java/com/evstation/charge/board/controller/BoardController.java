@@ -65,7 +65,7 @@ public class BoardController {
 	
 	@GetMapping("/{boardId}/edit")
 	public String editForm(@PathVariable Long boardId, Model m) {
-		Optional<Board> board = boardRepo.findById(boardId);
+		BoardResponseDto board = boardSer.findById(boardId);
 		m.addAttribute("board", board);
 		return "board/board-edit";
 	}

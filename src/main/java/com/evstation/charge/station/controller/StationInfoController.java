@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.evstation.charge.config.auth.LoginUser;
 import com.evstation.charge.config.auth.User;
+import com.evstation.charge.config.auth.dto.SessionUser;
 import com.evstation.charge.station.entity.StationInfo;
 import com.evstation.charge.station.service.StationInfoService;
 
@@ -24,7 +25,7 @@ public class StationInfoController {
 	private final StationInfoService stationInfoSer;
 	private final HttpSession httpSession;
 	@GetMapping("/")
-	public String dots(Model m,@LoginUser User user) {
+	public String dots(Model m,@LoginUser SessionUser user) {
 		List<StationInfo> list = stationInfoSer.findAll();
 		m.addAttribute("list", list);
 		if (user != null) {
