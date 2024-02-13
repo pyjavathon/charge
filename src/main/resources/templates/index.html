@@ -61,12 +61,18 @@ h1{
     </div>
   </div>
 </nav>
+
+<div sec:authorize="hasRole('ADMIN')">
+<a th:href="@{/admin}">관리자 페이지</a>
+</div>
+
+
 <div id="login-box">
 <div sec:authorize="isAuthenticated()">
     Logged in as: <span id="username" th:text="${username}">None</span>
     <a href="/logout" class="btn btn-info active" role="button">Logout</a>
 </div>
-<a sec:authorize="isAnonymous()" href="/oauth2/authorization/google" class="btn btn-secondary active" role="button">Google Login</a>
+<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
 </div>
 <div id="map" style="width:90%;height:500px;"></div>
 

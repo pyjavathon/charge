@@ -26,15 +26,19 @@ public class SecurityConfig {
 			.and()
 			
 			.authorizeHttpRequests()
-			.antMatchers("/", "/css/**", "/img/**", "/js/**").permitAll()
-            .antMatchers("/api/v1/**").hasRole(Role.USER.name())
-            .anyRequest().authenticated()
+			//.antMatchers("/", "/css/**", "/img/**", "/js/**").permitAll()
+            //.antMatchers("/api/v1/**").hasRole(Role.USER.name())
+            .antMatchers("/private/**").authenticated()
+            .antMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().permitAll()
         .and()
             .logout()
-                .logoutSuccessUrl("/")
+            .logoutSuccessUrl("/")
         .and()
             .oauth2Login()
-                .userInfoEndpoint()
+            .loginPage("/loginForm")
+            .defaultSuccessUrl("/")
+            .userInfoEndpoint()//로그인 완료 후 회원정보 받기
             .userService(customOAuth2UserService);
 		
 		
