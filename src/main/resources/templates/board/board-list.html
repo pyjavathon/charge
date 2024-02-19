@@ -5,7 +5,13 @@
   <meta charset="UTF-8">
   <title>Title</title>
   <style>
-  
+h1{
+	font-family: 돋움;
+	font-weight: 1000;
+	color: green;
+	margin-top:80px;
+	
+}  
 #nav-item{
 	color: grey;
 	font-size: small;
@@ -32,7 +38,20 @@
 	margin-left:auto;
 	margin-right:auto;
 }
+.page-box{
+	width: 100%;
+	max-width: 1120px;
+	margin: 50px 550px 300px;
+	
+}
+.big-box-table-border{
+
+	margin:50px;
+
+}
   </style>
+   <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </head>
 <body>
 <div id="head">
@@ -67,8 +86,14 @@
 <div>
 	<button onclick="location.href='board-add.html'" th:onclick="|location.href='@{/board/add}'|" type="button">게시글 등록</button>
 </div>
-
-<table class="full-board" border="1" >
+<div class="big-box-table-border">
+<table class="table table-sm table-striped table-bordered">
+<colgroup>
+ <col width=10%>
+            <col width=20%>
+            <col width=40%>
+            <col width=30%>
+        </colgroup>
   <tr>
     <th>no</th>
     <th>제목</th>
@@ -82,7 +107,8 @@
     <td th:text="${board.boardContent}">boardContent</td>
   </tr>
 </table>
-<div class="full-board" th:if="${!boardList.isEmpty()}">
+</div>
+<div class="page-box" th:if="${!boardList.isEmpty()}">
     <ul class="pagination"
         th:with="
             pageNumber = ${boardList.pageable.pageNumber},

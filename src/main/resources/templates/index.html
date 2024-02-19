@@ -22,23 +22,23 @@ h1{
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-left:110px;
+  margin-left:210px;
   margin-top: 10px;
 }
 
 #map{
 	margin-top: 10px;
-   	margin-right: 50px;
+   	margin-right: auto;
     margin-bottom: 10px;
-    margin-left: 100px;
+    margin-left: auto;
 }
 .container-fluid{
-	margin-left:80px;
+	margin-left:180px;
+	margin-right:70px;
 }
 #nav-item{
 	color: grey;
 }
-
 </style>
 </head>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a2db09614566cd3595be56c4c2d29488&libraries=clusterer"></script>
@@ -56,9 +56,16 @@ h1{
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
        
-          <a id="nav-item" th:href="@{board/list}" >QnA</a>
+          <a id="nav-item" th:href="@{board/list}" >자유게시판</a>
       </ul>
     </div>
+    <div id="login-box">
+<div sec:authorize="isAuthenticated()">
+    Logged in as: <span id="username" th:text="${username}">None</span>
+    <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+</div>
+<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
+</div>
   </div>
 </nav>
 
@@ -66,19 +73,17 @@ h1{
 <a th:href="@{/admin}">관리자 페이지</a>
 </div>
 
+<p><button onclick="getCurrentPosBtn()">내 위치</button> </p>
 
-<div id="login-box">
-<div sec:authorize="isAuthenticated()">
-    Logged in as: <span id="username" th:text="${username}">None</span>
-    <a href="/logout" class="btn btn-info active" role="button">Logout</a>
-</div>
-<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
-</div>
-<div id="map" style="width:90%;height:500px;"></div>
-<p><button onclick="getCurrentPosBtn()">지도 중심좌표 부드럽게 이동시키기</button> </p>
+
+<div id="map" style="width:70%;height:500px;"></div>
+
+
 
 <script th:inline="javascript">
-		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+		var mapContainer = document.getElementById('map'),
+		container = document.getElementById('container'), // 지도와 로드뷰를 감싸고 있는 div 입니다
+	    mapWrapper = document.getElementById('mapWrapper'),// 지도를 표시할 div 
 		mapOption = { 
     		center: new kakao.maps.LatLng(37.566887, 126.978063), // 지도의 중심좌표
     		level: 3 // 지도의 확대 레벨
@@ -99,8 +104,9 @@ h1{
 		            message = '<div style="padding:5px;">여기에 계신가요?!</div>'; // 인포윈도우에 표시될 내용입니다
 		        
 		        // 마커와 인포윈도우를 표시합니다
-		        displayMarker(locPosition, message);
-		        displayMarker2(locPosition,message)
+		        displayMarker(locPosition, message),
+		        displayMarker2(locPosition,message),
+		        GroundOverlay(bounds, imgSrc);
 		      });
 		    
 		} else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
@@ -209,9 +215,54 @@ function locationLoadError(pos){
 function getCurrentPosBtn(){
 	navigator.geolocation.getCurrentPosition(locationLoadSuccess,locationLoadError);
 };
-		     
+function GroundOverlay(bounds, imgSrc) {
+    this.bounds = bounds;
+	var node = this.node = document.createElement('div');
+    node.className = 'node';
+   
+    var img = this.img = document.createElement('img');
+    img.style.position = 'absolute';
+    img.src = imgSrc;
+    
+    node.appendChild(img);
+}
+
+GroundOverlay.prototype = new kakao.maps.AbstractOverlay;
+    
+GroundOverlay.prototype.onAdd = function() {
+     var panel = this.getPanels().overlayLayer;
+	 panel.appendChild(this.node);
+};
+
+// 줌인 아웃 시 이미지를 원하는 bounds값에 맞게 표출하기 위해 img style을 정의 및 선언합니다.
+GroundOverlay.prototype.draw = function() {
+    var projection = this.getProjection();
+    var ne = projection.pointFromCoords(this.bounds.getNorthEast());
+    var sw = projection.pointFromCoords(this.bounds.getSouthWest());
+    
+    var width = ne.x - sw.x;
+	var height = sw.y - ne.y;  
+    
+    this.img.style.top = ne.y+'px';
+    this.img.style.left = sw.x+'px';
+    this.img.style.width = width+'px';
+    this.img.style.height = height+'px';
+}
+    
+GroundOverlay.prototype.onRemove = function() {
+   this.node.parentNode.removeChild(this.node);
+};
+
+// LatLng, LatLngBounds 를 사용하는 코드로 변경해야 함.
+var sw = new kakao.maps.LatLng(37.503, 127.022581);
+    ne = new kakao.maps.LatLng(37.5, 127.028581);
+
+var bounds = new kakao.maps.LatLngBounds(sw, ne);
+    
+var overlay = new GroundOverlay(bounds, 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/roadviewoverlay_img_02.png');
+overlay.setMap(map);    
 		
-	</script>
+</script>
 
 
 </body>
