@@ -3,6 +3,7 @@ package com.evstation.charge.station.entity;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -19,4 +20,6 @@ public class StationInfo {
 	public double stationLat;
 	
 	public double stationLng;
+	
+	
 }

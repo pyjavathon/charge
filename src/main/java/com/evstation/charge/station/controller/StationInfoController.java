@@ -4,9 +4,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.evstation.charge.config.auth.LoginUser;
 import com.evstation.charge.config.auth.User;
@@ -34,5 +39,14 @@ public class StationInfoController {
 
 		return "index";
 	}
+	
+	@GetMapping("search")
+	public String search(Model m,@PageableDefault(page = 0, size = 10, sort = "stationId",direction = Sort.Direction.DESC)Pageable pageable,@RequestParam(name = "searchTxt") String searchTxt) {
+		
+		m.addAttribute("sList", stationInfoSer.search(pageable,searchTxt));
+		m.addAttribute("searchTxt", searchTxt);
+		return "ev-station/search-list";
+	}
+	
 
 }

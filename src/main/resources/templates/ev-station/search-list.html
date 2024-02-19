@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>검색 결과</title>
+</head>
+<body>
+<table class="full-board" border="1" >
+  <tr>
+    <th>충전소명</th>
+    <th>주소</th>
+  </tr>
+  <tr th:each="station : ${sList}">
+    <td th:text="${station.stationNm}">stationNm</td>
+    <td th:text="${station.stationAddr}">stationAddr</td>
+  </tr>
+</table>
+<div class="full-board" th:if="${!sList.isEmpty()}">
+    <ul class="pagination"
+        th:with="
+            pageNumber = ${sList.pageable.pageNumber},
+            pageSize = ${sList.pageable.pageSize},
+            totalPages = ${sList.totalPages},
+            startPage = ${T(java.lang.Math).floor(pageNumber / pageSize) * pageSize + 1},
+            tempEndPage = ${startPage + pageSize - 1},
+            endPage = (${tempEndPage < totalPages ? tempEndPage : totalPages})">
+
+        <li th:classappend="${sList.first} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="${sList.first} ? '#' : @{/search(searchTxt=${searchTxt},page=${pageNumber - 1})}">
+                <span aria-hidden="true">&lt;</span>
+            </a>
+        </li>
+
+        <li th:each="page: ${#numbers.sequence(startPage, endPage)}" th:classappend="${page == pageNumber + 1} ? 'active'" class="page-item">
+            <a th:text="${page}" class="page-link" th:href="@{/search(searchTxt=${searchTxt},page=${page - 1})}"></a>
+        </li>
+
+        <li th:classappend="${sList.last} ? 'disabled'" class="page-item">
+            <a class="page-link" th:href="${sList.last} ? '#' : @{/search(searchTxt=${searchTxt},page=${pageNumber + 1})}" aria-label="Next">
+                <span aria-hidden="true">&gt;</span>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
