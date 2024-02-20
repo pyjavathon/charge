@@ -48,6 +48,11 @@ h1{
 #search-btn{
 margin-right:330px;
 }
+#current-my-loc-btn{
+margin-left: 980px;
+margin-top: 30px;
+}
+   
 </style>
 </head>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a2db09614566cd3595be56c4c2d29488&libraries=clusterer"></script>
@@ -63,6 +68,7 @@ margin-right:330px;
 <a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
 </div>
 </div>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">HOME</a>
@@ -86,20 +92,12 @@ margin-right:330px;
         <input id="search-box" class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="searchTxt" th:value="${searchTxt}">
         <button id="search-btn" class="btn btn-outline-success" type="submit">Search</button>
  </form>
-<p><button onclick="getCurrentPosBtn()">내 위치</button> </p>
-
+<p id="current-my-loc-btn"><button class="btn btn-warning" onclick="getCurrentPosBtn()">현위치</button> </p>
+ 
 
 <div id="map" style="width:70%;height:500px;"></div>
- <div class="custom_typecontrol radius_border">
-        <span id="btnRoadmap" class="selected_btn" onclick="setMapType('roadmap')">지도</span>
-        <span id="btnSkyview" class="btn" onclick="setMapType('skyview')">스카이뷰</span>
-    </div>
-
-
 <script th:inline="javascript">
 		var mapContainer = document.getElementById('map'),
-		container = document.getElementById('container'), // 지도와 로드뷰를 감싸고 있는 div 입니다
-	    mapWrapper = document.getElementById('mapWrapper'),// 지도를 표시할 div 
 		mapOption = { 
     		center: new kakao.maps.LatLng(37.566887, 126.978063), // 지도의 중심좌표
     		level: 3 // 지도의 확대 레벨
@@ -121,9 +119,10 @@ margin-right:330px;
 		        
 		        // 마커와 인포윈도우를 표시합니다
 		        displayMarker(locPosition, message),
-		        displayMarker2(locPosition,message),
-		        GroundOverlay(bounds, imgSrc);
+		        displayMarker2(locPosition,message);
 		      });
+		    
+		   
 		    
 		} else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
 		    
@@ -144,6 +143,7 @@ function displayMarker(locPosition, message) {
     	map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
     	averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
     	minLevel: 10 // 클러스터 할 최소 지도 레벨 
+    	
 	});
 	
 
@@ -209,6 +209,8 @@ function displayMarker2(locPosition,message){
 	    map.setCenter(locPosition); 
 }		
 
+
+
 function locationLoadSuccess(pos){
     // 현재 위치 받아오기
     var currentPos = new kakao.maps.LatLng(pos.coords.latitude,pos.coords.longitude),
@@ -218,7 +220,7 @@ function locationLoadSuccess(pos){
     // 마커와 인포윈도우를 표시합니다
     displayMarker2(currentPos, message);
     // 지도 이동(기존 위치와 가깝다면 부드럽게 이동)
-    map.panTo(currentPos);
+    overlay(currentPos);
 };
 
 function locationLoadError(pos){
@@ -231,52 +233,7 @@ function locationLoadError(pos){
 function getCurrentPosBtn(){
 	navigator.geolocation.getCurrentPosition(locationLoadSuccess,locationLoadError);
 };
-function GroundOverlay(bounds, imgSrc) {
-    this.bounds = bounds;
-	var node = this.node = document.createElement('div');
-    node.className = 'node';
-   
-    var img = this.img = document.createElement('img');
-    img.style.position = 'absolute';
-    img.src = imgSrc;
-    
-    node.appendChild(img);
-}
 
-GroundOverlay.prototype = new kakao.maps.AbstractOverlay;
-    
-GroundOverlay.prototype.onAdd = function() {
-     var panel = this.getPanels().overlayLayer;
-	 panel.appendChild(this.node);
-};
-
-// 줌인 아웃 시 이미지를 원하는 bounds값에 맞게 표출하기 위해 img style을 정의 및 선언합니다.
-GroundOverlay.prototype.draw = function() {
-    var projection = this.getProjection();
-    var ne = projection.pointFromCoords(this.bounds.getNorthEast());
-    var sw = projection.pointFromCoords(this.bounds.getSouthWest());
-    
-    var width = ne.x - sw.x;
-	var height = sw.y - ne.y;  
-    
-    this.img.style.top = ne.y+'px';
-    this.img.style.left = sw.x+'px';
-    this.img.style.width = width+'px';
-    this.img.style.height = height+'px';
-}
-    
-GroundOverlay.prototype.onRemove = function() {
-   this.node.parentNode.removeChild(this.node);
-};
-
-// LatLng, LatLngBounds 를 사용하는 코드로 변경해야 함.
-var sw = new kakao.maps.LatLng(37.503, 127.022581);
-    ne = new kakao.maps.LatLng(37.5, 127.028581);
-
-var bounds = new kakao.maps.LatLngBounds(sw, ne);
-    
-var overlay = new GroundOverlay(bounds, 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/roadviewoverlay_img_02.png');
-overlay.setMap(map);    
 		
 </script>
 
