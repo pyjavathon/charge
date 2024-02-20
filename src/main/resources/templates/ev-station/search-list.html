@@ -1,10 +1,83 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <meta charset="UTF-8">
 <title>검색 결과</title>
+<style type="text/css">
+#login-box{
+	text-align:right;
+	margin-left: 400px;
+	margin-top: 80px;
+}
+
+#head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left:210px;
+  margin-top: 10px;
+}
+.container-fluid{
+	margin-left:180px;
+	margin-right:70px;
+}
+#nav-item{
+	color: grey;
+}
+#search-box {
+  margin-left:190px;
+	
+  border-color: green;
+}
+#search-btn{
+margin-right:330px;
+}
+#table-box-style{
+
+margin:10px 300px;
+}
+#page-style-big{
+	margin: 10px 360px 200px;
+}
+</style>
 </head>
 <body>
+<div id="head">
+	<img alt="전기차 충전소" src="/img/free-icon-charging-station-8724859.png" width="100px" height="100px">
+	<h1>ev-station</h1>
+	<div id="login-box">
+		<div sec:authorize="isAuthenticated()">
+    		Logged in as: <span id="username" th:text="${username}">None</span>
+    		<a href="/logout" class="btn btn-info active" role="button">Logout</a>
+		</div>
+<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
+</div>
+</div>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a id="nav-item" class="navbar-brand" th:href="@{/}">HOME</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+       
+          <a id="nav-item" th:href="@{board/list}" >자유게시판</a>
+      </ul>
+    </div>
+    
+  </div>
+</nav>
+
+<div sec:authorize="hasRole('ADMIN')">
+<a th:href="@{/admin}">관리자 페이지</a>
+</div>
+ <form class="d-flex" role="search" th:action="@{/search}" th:method="get">
+        <input id="search-box" class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="searchTxt" th:value="${searchTxt}">
+        <button id="search-btn" class="btn btn-outline-success" type="submit">Search</button>
+ </form>
+ <div id="table-box-style">
 <table class="full-board" border="1" >
   <tr>
     <th>충전소명</th>
@@ -15,7 +88,9 @@
     <td th:text="${station.stationAddr}">stationAddr</td>
   </tr>
 </table>
-<div class="full-board" th:if="${!sList.isEmpty()}">
+</div>
+<div id="page-style-big">
+<div class="page-box" th:if="${!sList.isEmpty()}">
     <ul class="pagination"
         th:with="
             pageNumber = ${sList.pageable.pageNumber},
@@ -41,6 +116,7 @@
             </a>
         </li>
     </ul>
+</div>
 </div>
 </body>
 </html>

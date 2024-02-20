@@ -12,26 +12,38 @@ h1{
 	margin-top:80px;
 	
 }  
-#nav-item{
-	color: grey;
-	font-size: small;
-	
-}
-.container-fluid{
-	margin-left:80px;
-} 
+
+
 #head {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-left:110px;
+  margin-left:210px;
   margin-top: 10px;
-}  
-#login-box{
-	text-align:right;
-	margin-right: 100px;
+} 
+.container-fluid{
+	margin-left:180px;
+	margin-right:70px;
+} 
+#nav-item{
+	color: grey;
+	
 }
+#login-box{
+		text-align:right;
+	margin-left: 400px;
+	margin-top: 80px;
+}
+#board-add-btn{
 
+	margin-right: 5px;
+	text-align: center;
+}
+#board-btn-container{
+		width: 100%;
+		text-align: center;
+		
+}
 .full-board{
 
 	border:1px solid black;
@@ -41,14 +53,19 @@ h1{
 .page-box{
 	width: 100%;
 	max-width: 1120px;
-	margin: 50px 550px 300px;
+	margin: 10px 550px 300px;
 	
 }
 .big-box-table-border{
 
-	margin:50px;
+	margin:10px 300px;
 
 }
+.navbar-brand{
+	margin-left: 20px;
+	font-size: medium;
+}
+
   </style>
    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -57,54 +74,51 @@ h1{
 <div id="head">
 	<img alt="전기차 충전소" src="/img/free-icon-charging-station-8724859.png" width="100px" height="100px">
 	<h1>ev-station</h1>
-</div>
-
-<div id="login-box">
+	 <div id="login-box">
 <div sec:authorize="isAuthenticated()">
     Logged in as: <span id="username" th:text="${username}">None</span>
     <a href="/logout" class="btn btn-info active" role="button">Logout</a>
 </div>
-<a sec:authorize="isAnonymous()" href="/oauth2/authorization/google" class="btn btn-secondary active" role="button">Google Login</a>
+<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
+</div>
 </div>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
+  
     <a id="nav-item" th:href="@{/}">HOME</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+   
+    <div class="collapse navbar-collapse" id="navbarNav">
+   <ul class="navbar-nav">
+          <a class="navbar-brand"  href="#" >자유게시판</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-       
-        <li class="nav-item">
-          <a class="navbar-brand" href="#">QnA</a>
-        </li>
-      </ul>
+    </ul> 
     </div>
+   
+  </div>
+  <div id="board-btn-container">
+  <button id="board-add-btn" class="btn btn-outline-success" onclick="location.href='board-add.html'" th:onclick="|location.href='@{/board/add}'|" type="button">글쓰기</button>
   </div>
 </nav>
-<div>
-	<button onclick="location.href='board-add.html'" th:onclick="|location.href='@{/board/add}'|" type="button">게시글 등록</button>
-</div>
+
 <div class="big-box-table-border">
-<table class="table table-sm table-striped table-bordered">
+<table class="table table-bordered">
 <colgroup>
- <col width=10%>
-            <col width=20%>
+ 			<col width=10%>
             <col width=40%>
-            <col width=30%>
+            <col width=20%>
         </colgroup>
-  <tr>
+  <tr class="table-success">
     <th>no</th>
-    <th>제목</th>
+    <th>title</th>
     <th>작성자</th>
-    <th>내용</th>
   </tr>
   <tr th:each="board : ${boardList}">
     <td th:text="${board.boardId}">boardId</td>
     <td><a href="board-detail.html" th:href="@{|/board/${board.boardId}|}" th:text="${board.boardNm}">boardNm</a></td>
     <td th:text="${board.boardWriter}">boardWriter</td>
-    <td th:text="${board.boardContent}">boardContent</td>
   </tr>
 </table>
 </div>

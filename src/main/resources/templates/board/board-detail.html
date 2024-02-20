@@ -1,40 +1,140 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+
+h1{
+	font-family: 돋움;
+	font-weight: 1000;
+	color: green;
+	margin-top:80px;
+	
+}  
+
+
+#head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left:210px;
+  margin-top: 10px;
+}
+.container-fluid{
+	margin-left:180px;
+	margin-right:70px;
+} 
+#nav-item{
+	color: grey;
+	
+}
+#login-box{
+		text-align:right;
+	margin-left: 400px;
+	margin-top: 80px;
+}
+
+.navbar-brand{
+	margin-left: 20px;
+	font-size: medium;
+}
+.container{
+	width:350px;
+	margin:10px 500px;
+	
+
+}
+#board-title-box{
+	text-align: center;
+	font-size: xx-large;
+}
+#board-writer-box{
+	text-align: right;
+}
+#board-content-table{
+	margin-left:auto; 
+    margin-right:auto;
+    
+}
+.comment-area{
+	width:550px;
+	margin:10px 400px;
+}
+.card{
+width:450px;
+	margin:10px 450px;
+}
+.board-del-btn{
+	margin-left: 15px;
+}
+#del-btn{
+	background-color: white;
+	border: none;
+	color: red;
+	margin-top: 5px;
+}
+#span-write-tag{
+	margin-bottom: 0px;
+	font-size: smaller;
+}
+</style>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </head>
 <body>
-
-<h2>게시글 상세</h2>
-<div>
-	<label for="boardNm">제목</label>
-	<input type="text" id="boardNm" name="boardNm" value="제목" th:value="${board.boardNm}" readonly>
+<div id="head">
+	<img alt="전기차 충전소" src="/img/free-icon-charging-station-8724859.png" width="100px" height="100px">
+	<h1>ev-station</h1>
+	 <div id="login-box">
+<div sec:authorize="isAuthenticated()">
+    Logged in as: <span id="username" th:text="${username}">None</span>
+    <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+</div>
+<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
+</div>
 </div>
 
-<div>
-	<label for="boardWriter">작성자</label>
-	<input type="text" id="boardWriter" name="boardWriter" value="작성자" th:value="${board.boardWriter}" readonly>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+  
+    <a id="nav-item" th:href="@{/board/list}">목록으로</a>
+   
+    <div class="collapse navbar-collapse" id="navbarNav">
+   <ul class="navbar-nav">
+          <a class="navbar-brand" th:href="@{/board/{boardId}/edit(boardId=${board.boardId})}" >수정</a>
+          <form class="board-del-btn" th:action="@{/board/{boardId}/del(boardId=${board.boardId})}" th:method="delete" >
+          <button id="del-btn" type="submit">삭제</button></form>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    </ul> 
+    </div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+   <ul class="navbar-nav">
+   
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    </ul> 
+    </div>
+   
+  </div>
+
+</nav>
+
+<div class="container">
+<div id="board-title-box"><div class="container-xxl" th:text="${board.boardNm}"></div></div>
+<div id="board-writer-box"  th:text=" ${board.boardWriter}"></div>
+	<table id="board-content-table" class="table table-borderless border">
+		<tr><td th:text="${board.boardContent}"></td></tr>
+	</table>
+	
 </div>
-
-<div>
-	<label for="boardContent">내용</label>
-	<input type="text" id="boardContent" name="boardContent" value="내용" th:value="${board.boardContent}" readonly>
-</div>
-
-<div>
-	<button onclick="location.href='board-edit.html'" th:onclick="|location.href='@{/board/{boardId}/edit(boardId=${board.boardId})}'|" type="button">게시글 수정</button>
-</div>
-
-<div>
-	<button onclick="location.href='board-list.html'" th:onclick="|location.href='@{/board/list}'|" type="button">목록으로</button>
-</div>
-
-
-
 
 <!-- 댓글 쓰는 란 -->
-	<form>
+	<form class="comment-area">
             <div class="card-body">
                 <input type="hidden" id="boardId" th:value="${board.boardId}">
                 <ul class="list-group list-group-flush">
@@ -50,9 +150,10 @@
         <div class="card-header">댓글</div>
         <ul id="reply--box" class="list-group" th:each="comment : ${board.comments}">
             <li th:value="${comment.commentId}" class="list-group-item d-flex justify-content-between" >
+            <div class="text-monospace mr-1" id=comment-writer th:text="${comment.commentWriter}"></div>
                 <div th:id="'comment-content-exist'+${comment.commentId}" th:text="${comment.comment}"></div>
                 <div class="d-flex">
-                    <span class="text-monospace mr-1">작성자: &nbsp;</span><div class="text-monospace mr-1" id=comment-writer th:text="${comment.commentWriter}"></div>
+                    
                     <button id="comment-btn-modify" class="badge btn-warning" onclick="comModi(this)" th:value="${comment.commentId}">수정</button><span> | </span>
                     <button id="comment-btn-del" class="badge btn-danger" onclick="comDel(this)" th:value="${comment.commentId}">삭제</button>
                 </div>

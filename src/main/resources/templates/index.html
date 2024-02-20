@@ -15,7 +15,8 @@ h1{
 }	
 #login-box{
 	text-align:right;
-	margin-right: 100px;
+	margin-left: 400px;
+	margin-top: 80px;
 }
 
 #head {
@@ -39,6 +40,14 @@ h1{
 #nav-item{
 	color: grey;
 }
+#search-box {
+  margin-left:190px;
+	
+  border-color: green;
+}
+#search-btn{
+margin-right:330px;
+}
 </style>
 </head>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a2db09614566cd3595be56c4c2d29488&libraries=clusterer"></script>
@@ -46,6 +55,13 @@ h1{
 <div id="head">
 	<img alt="전기차 충전소" src="/img/free-icon-charging-station-8724859.png" width="100px" height="100px">
 	<h1>ev-station</h1>
+	<div id="login-box">
+		<div sec:authorize="isAuthenticated()">
+    		Logged in as: <span id="username" th:text="${username}">None</span>
+    		<a href="/logout" class="btn btn-info active" role="button">Logout</a>
+		</div>
+<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
+</div>
 </div>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
@@ -59,25 +75,25 @@ h1{
           <a id="nav-item" th:href="@{board/list}" >자유게시판</a>
       </ul>
     </div>
-    <div id="login-box">
-<div sec:authorize="isAuthenticated()">
-    Logged in as: <span id="username" th:text="${username}">None</span>
-    <a href="/logout" class="btn btn-info active" role="button">Logout</a>
-</div>
-<a sec:authorize="isAnonymous()" th:href="@{/loginForm}" class="btn btn-secondary active" role="button">Google Login</a>
-</div>
+    
   </div>
 </nav>
 
 <div sec:authorize="hasRole('ADMIN')">
 <a th:href="@{/admin}">관리자 페이지</a>
 </div>
-
+ <form class="d-flex" role="search" th:action="@{/search}" th:method="get">
+        <input id="search-box" class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="searchTxt" th:value="${searchTxt}">
+        <button id="search-btn" class="btn btn-outline-success" type="submit">Search</button>
+ </form>
 <p><button onclick="getCurrentPosBtn()">내 위치</button> </p>
 
 
 <div id="map" style="width:70%;height:500px;"></div>
-
+ <div class="custom_typecontrol radius_border">
+        <span id="btnRoadmap" class="selected_btn" onclick="setMapType('roadmap')">지도</span>
+        <span id="btnSkyview" class="btn" onclick="setMapType('skyview')">스카이뷰</span>
+    </div>
 
 
 <script th:inline="javascript">
